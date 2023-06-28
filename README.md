@@ -4,7 +4,7 @@ A Rebel project used to find regressions in [Rebel Engine](https://github.com/Re
 This project was forked from the [Godot regression test project v3.4](https://github.com/godotengine/regression-test-project/tree/3.4), which was used to do regression testing against [Godot 3.4.5](https://github.com/godotengine/godot/tree/3.4.5-stable) from which Rebel Engine was forked.
 
 ## Basic Information
-This project contains a number of test scenes and a default `Start.tscn` scene that opens all the other scenes. The list of test scenes can be found in the `Autoload.gd` file. Comment out selected lines in the `test_scenes` `Array` to choose which scenes will run.
+This project contains a number of test scenes and a default `Main.tscn` scene that opens all the other scenes. The list of test scenes can be found in the `Autoload.gd` file. Comment out selected lines in the `test_scenes` `Array` to choose which scenes will run.
 
 ![Autoload gd](https://github.com/RebelToolbox/RebelTestProject/assets/9253928/30ad7475-cacf-4388-975a-a53e8133a75b)
 
