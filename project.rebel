@@ -10,6 +10,7 @@ config_version=4
 
 [application]
 
+config/name="Rebel Test Project"
 run/main_scene="res://Start.tscn"
 config/icon="res://icon.png"
 
