@@ -82,24 +82,31 @@ jobs:
       - name: Make Rebel Build Executable
         run: chmod +x ${{ matrix.rebel-executable }}
 
-      # Open Editor to import assets
-      - name: Open Rebel Engine Editor
+      # Open Rebel Editor to import assets
+      - name: Open Rebel Editor
         run: |
-          DRI_PRIME=0 xvfb-run ./${{ matrix.rebel-executable }} -e -q 2>&1 | tee editor.log || true
+          DRI_PRIME=0 xvfb-run ./${{ matrix.rebel-executable }} -e -q 2>&1 | tee editor.log
 
-      - name: Run Rebel Engine Test Project
-        run: |
-          DRI_PRIME=0 xvfb-run ./${{ matrix.rebel-executable }} 300 2>&1 | tee project.log || true
-
-      - name: Upload artifacts
-        if: always()
+      - name: Upload editor failure log
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact }}-logs
-          path: |
-            editor.log
-            project.log
+          name: ${{ matrix.artifact }}-editor-failure-log
+          path: editor.log
           retention-days: 14
+
+      - name: Run Rebel Test Project
+        run: |
+          DRI_PRIME=0 xvfb-run ./${{ matrix.rebel-executable }} 300 2>&1 | tee project.log
+
+      - name: Upload project failure log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}-project-failure-log
+          path: project.log
+          retention-days: 14
+
 
   linux-export-tests:
     name: ${{ matrix.name }}
@@ -140,20 +147,26 @@ jobs:
           template="$(pwd)/${{ matrix.template }}"
           sed -i "s|${{ matrix.export-preset-key }}|$template|" export_presets.cfg
 
-      - name: Export Project
+      - name: Export project
         run: |
-          DRI_PRIME=0 xvfb-run ./${{ matrix.editor }} --export${{ matrix.export-type }} "${{ matrix.export-preset }}" ${{ matrix.export }} 2>&1 | tee export.log || true
+          DRI_PRIME=0 xvfb-run ./${{ matrix.editor }} --export${{ matrix.export-type }} "${{ matrix.export-preset }}" ${{ matrix.export }} 2>&1 | tee export.log
 
-      - name: Run Exported Project
-        run: |
-          DRI_PRIME=0 xvfb-run ./${{ matrix.export }} 300 2>&1 | tee project.log || true
-
-      - name: Upload artifacts
+      - name: Upload export failure log
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.export }}
-          path: |
-            ${{ matrix.export }}
-            export.log
-            project.log
+          name: ${{ matrix.artifact }}-export-failure-log
+          path: export.log
+          retention-days: 14
+
+      - name: Run exported project
+        run: |
+          DRI_PRIME=0 xvfb-run ./${{ matrix.export }} 300 2>&1 | tee exported-project.log
+
+      - name: Upload exported project failure log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}-exported-project-failure-log
+          path: exported-project.log
           retention-days: 14
